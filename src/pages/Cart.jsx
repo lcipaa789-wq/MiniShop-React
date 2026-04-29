@@ -1,7 +1,6 @@
 import React from "react";
 
-const Cart = ({ cart }) => {
-  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+const Cart = () => {
   const handleCheckout = () => {};
   return (
     <>
