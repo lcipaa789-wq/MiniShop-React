@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
@@ -6,10 +6,12 @@ import Cart from "./pages/Cart";
 import Footer from "./components/Footer";
 import AddProduct from "./pages/AddProduct";
 import OrdersHistory from "./pages/OrdersHistory";
+import { CartContext, CartProvider } from "./context/CartContext";
 
 function App() {
   const [products, setProducts] = useState([]); //to store products from API
   const [search, setSearch] = useState("");
+  const { toast } = useContext(CartContext);
   //fetch products from API
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +30,7 @@ function App() {
         {/* navbar allways visible */}
         <Navbar search={search} setSearch={setSearch} />
         <main className="main-container">
+          {toast && <div className="toast">{toast} </div>}
           <Routes>
             <Route
               path="/"

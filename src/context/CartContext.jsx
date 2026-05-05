@@ -4,6 +4,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [toast, setToast] = useState("");
 
   //
   const addToCart = (product) => {
@@ -17,6 +18,10 @@ export const CartProvider = ({ children }) => {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
     // console.log(cart);
+    setToast(`${product.title} added to cart`);
+    setTimeout(() => {
+      setToast("");
+    }, 2000);
   };
   //
 
@@ -52,6 +57,7 @@ export const CartProvider = ({ children }) => {
         cartCount,
         placeOrder,
         orders,
+        toast,
       }}
     >
       {children}
