@@ -144,6 +144,17 @@ body {
   position: sticky;
   top: 90px;
 }
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-top: 0;
+}
+
+.filters select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
 .checkout-btn {
   width: 100%;
   background: #ffd814;
@@ -169,13 +180,15 @@ body {
   padding: 20px 0;
   /* border-bottom: 2px solid #ddd; */
   max-width: 600px;
-  margin: 20px;
+  margin: 1px;
+  border-radius: 10px;
 }
 .cart-img {
   width: 120px;
   height: 120px;
   object-fit: contain;
   border-radius: 5px;
+  margin-left: 10px;
 }
 .cart-details {
   flex: 1;

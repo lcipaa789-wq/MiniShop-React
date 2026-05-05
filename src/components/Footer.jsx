@@ -5,8 +5,10 @@ import {
   Twitter,
   Facebook,
 } from "react-bootstrap-icons";
+import { Link, useNavigate } from "react-router";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -17,9 +19,9 @@ const Footer = () => {
 
         <div className="footer-section">
           <h4>Links</h4>
-          <a href="#">Home</a>
-          <a href="#">Cart</a>
-          <a href="#">About</a>
+          <Link to="/">Home</Link>
+          <Link to="/cart">Cart</Link>
+          <Link to="/addProduct">Orders</Link>
         </div>
 
         <div className="footer-section">

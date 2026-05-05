@@ -14,7 +14,7 @@ const OrdersHistory = () => {
               <h3>Order #{o.orderNumber}</h3>
               <span className="order-status">{o.status}</span>
               <p className="order-date">Date: {o.date}</p>
-              <p className="order-total">Total: {o.total.toFixed(2)} </p>
+              <p className="order-total">Total: ${o.total.toFixed(2)} </p>
               <p className="order-description">{o.description} </p>
               <div className="order-items">
                 {o.items.map((i) => (
@@ -24,7 +24,7 @@ const OrdersHistory = () => {
                     </div>
                     <div>
                       <h4>{i.title}</h4>
-                      <p>Price: {i.price}</p>
+                      <p>Price: ${i.price}</p>
                       <p>Quantity: {i.quantity} </p>
                     </div>
                   </div>

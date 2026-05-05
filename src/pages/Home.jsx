@@ -6,14 +6,25 @@ const Home = ({ products, search }) => {
   const { addToCart } = useContext(CartContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectProduct, setSelectProduct] = useState(null);
+  const [category, setCategory] = useState("all"); //stores selected categoty
+  const [sort, setSort] = useState("default"); //stores selected sorting options
   const itemsPerPage = 12;
-  const filteredProducts = products.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase()),
-  );
+  let filteredProducts = products.filter((p) => {
+    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()); //search filter
+    const matchCategory = category === "all" || p.category?.name === category; //category filter
+    return matchSearch && matchCategory;
+  });
+  //sort products
+  if (sort === "low") {
+    filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
+  }
+  if (sort === "high") {
+    filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
+  }
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
   const pagesToShow = 5;
   let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
   let endPage = startPage + pagesToShow - 1;
@@ -26,6 +37,24 @@ const Home = ({ products, search }) => {
     <>
       <div className="home">
         {/* <h1>Products:</h1> */}
+        <div className="filters">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="all">All catefories</option>
+            <option value="Clothes">Clothes</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Shoes">shoes</option>
+          </select>
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value="default">Default</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+          </select>
+        </div>
+
         <section className="products-grid">
           {currentProducts.map((product) => (
             <>
