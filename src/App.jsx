@@ -3,10 +3,13 @@ import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
+import Footer from "./components/Footer";
+import AddProduct from "./pages/AddProduct";
+import OrdersHistory from "./pages/OrdersHistory";
 
 function App() {
   const [products, setProducts] = useState([]); //to store products from API
-
+  const [search, setSearch] = useState("");
   //fetch products from API
   useEffect(() => {
     const fetchProduct = async () => {
@@ -14,19 +17,32 @@ function App() {
 
       const data = await res.json();
       setProducts(data);
-      console.log(data);
+      // console.log(data);
     };
     fetchProduct();
   }, []);
 
   return (
     <>
-      {/* navbar allways visible */}
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home products={products} />} />
-        <Route path="/cart" element={<Cart />} />
-      </Routes>
+      <div className="app">
+        {/* navbar allways visible */}
+        <Navbar search={search} setSearch={setSearch} />
+        <main className="main-container">
+          <Routes>
+            <Route
+              path="/"
+              element={<Home products={products} search={search} />}
+            />
+            <Route path="/cart" element={<Cart />} />
+            <Route
+              path="/addProduct"
+              element={<AddProduct setProducts={setProducts} />}
+            />
+            <Route path="/orders" element={<OrdersHistory />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }

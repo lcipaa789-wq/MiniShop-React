@@ -1,22 +1,41 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
+import { InfoSquare, InfoSquareFill } from "react-bootstrap-icons";
 
-const Home = ({ products }) => {
+const Home = ({ products, search }) => {
   const { addToCart } = useContext(CartContext);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectProduct, setSelectProduct] = useState(null);
   const itemsPerPage = 12;
+  const filteredProducts = products.filter((p) =>
+    p.title.toLowerCase().includes(search.toLowerCase()),
+  );
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
   const totalPages = Math.ceil(products.length / itemsPerPage);
+  const pagesToShow = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
+  let endPage = startPage + pagesToShow - 1;
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = Math.max(1, endPage - pagesToShow + 1);
+  }
+
   return (
     <>
       <div className="home">
-        <h1>Products:</h1>
+        {/* <h1>Products:</h1> */}
         <section className="products-grid">
           {currentProducts.map((product) => (
             <>
               <article className="product-card" key={product.id}>
+                <button
+                  className="info-btn"
+                  onClick={() => setSelectProduct(product)}
+                >
+                  <InfoSquare size={18} />
+                </button>
                 <img className="product-img" src={product.images[0]} />
                 <h3 className="product-title">{product.title}</h3>
                 <p className="product-price">${product.price}</p>
@@ -30,17 +49,53 @@ const Home = ({ products }) => {
             </>
           ))}
         </section>
+        {selectProduct && (
+          <div className="modal-overlay" onClick={() => setSelectProduct(null)}>
+            <div className="modal" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="modal-close"
+                onClick={() => setSelectProduct(null)}
+              >
+                ×
+              </button>
+
+              <img
+                className="modal-img"
+                src={selectProduct.images?.[0]}
+                alt={selectProduct.title}
+              />
+
+              <h2>{selectProduct.title}</h2>
+              <p className="modal-price">${selectProduct.price}</p>
+              <p className="modal-description">{selectProduct.description}</p>
+
+              <button
+                className="product-btn"
+                onClick={() => addToCart(selectProduct)}
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="pagination">
-          {" "}
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={currentPage === i + 1 ? "active" : ""}
-            >
-              {i + 1}
-            </button>
-          ))}
+          {startPage > 1 && <span>...</span>}
+
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+            const page = startPage + i;
+            return (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={currentPage === page ? "active" : ""}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          {endPage < totalPages && <span>...</span>}
         </div>
       </div>
     </>
