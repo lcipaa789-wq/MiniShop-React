@@ -13,9 +13,11 @@ const Navbar = ({ search, setSearch }) => {
     <>
       <nav className="navbar">
         <Link to="/" className="navbar-logo">
-          <h1>
-            MiniShop-<span>React</span>
-          </h1>
+          <svg className="logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.5 6.5h13l-1.4 8.5H4.9L3.5 6.5z" stroke="#d4a843" strokeWidth="1.35" strokeLinejoin="round"/>
+            <path d="M7 6.5V5a3 3 0 016 0v1.5" stroke="#d4a843" strokeWidth="1.35" strokeLinecap="round"/>
+          </svg>
+          <span className="logo-name">minishop</span>
         </Link>
         <Link to="/addProduct" className="add-btn">
           <Plus size={18} /> Add Product
