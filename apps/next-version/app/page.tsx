@@ -1,3 +1,4 @@
+import HeroBanner from "@/components/layout/HeroBanner";
 import ProductGrid from "@/components/products/ProductGrid";
 
 import { prisma } from "@/lib/prisma";
@@ -10,6 +11,7 @@ export default async function Home() {
   });
   return (
     <main>
+      <HeroBanner />
       <ProductGrid />
     </main>
   );

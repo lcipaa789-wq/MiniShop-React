@@ -1,32 +1,34 @@
-/**
- * purpose:
- * return all products from database
- *
- * why:
- * the frontend needs a single source of truth for product data
- *
- * how it works:
- * 1.query all products using Prisma'
- * 2.return them as JSON
- * 3.handle unexpected server errors
- */
-import { prisma } from "@/lib/prisma";
+// GET /api/products — returns all products from the database.
+// Supports optional search query: /api/products?search=keyboard
 import { NextResponse } from "next/server";
-export async function GET() {
+import { prisma } from "@/lib/prisma";
+
+export async function GET(request: Request) {
+  // Extract search query from URL params (e.g. ?search=keyboard)
+  const { searchParams } = new URL(request.url);
+  const search = searchParams.get("search") ?? "";
+
   try {
-    //retrieve all products from database
-    const products = await prisma.product.findMany();
-    //return products as JSON
+    const products = await prisma.product.findMany({
+      // If search is provided, filter by title or description (case-insensitive)
+      where: search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" } },
+              { description: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : undefined,
+      // Newest products first
+      orderBy: { createdAt: "desc" },
+    });
+
     return NextResponse.json(products);
   } catch (error) {
-    console.error("Failed to fetch products", error);
+    console.error("[GET /api/products]", error);
     return NextResponse.json(
-      {
-        message: "Internal Server Error",
-      },
-      {
-        status: 500,
-      },
+      { error: "Failed to fetch products" },
+      { status: 500 },
     );
   }
 }

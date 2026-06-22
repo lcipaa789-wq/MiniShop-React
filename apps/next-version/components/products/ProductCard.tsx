@@ -18,6 +18,7 @@ interface ProductCardProps {
     rating: number;
     reviews: number;
   };
+  priority?: boolean;
 }
 export default function ProductCard({ product }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
