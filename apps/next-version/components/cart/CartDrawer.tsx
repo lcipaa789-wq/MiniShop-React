@@ -1,6 +1,8 @@
 //sliding cart drawer - opens fron the right when the cart icon is clicked
 //uses shadcn Sheet component for the slide-in abunatuib
 "use client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +16,41 @@ import { useCartStore } from "@/hooks/useCartSore";
 import CartItem from "@/components/cart/CartItem";
 
 export default function CartDrawer() {
+  const router = useRouter();
+  //states from Zustand store
   const items = useCartStore((state) => state.items);
   const totalItems = useCartStore((state) => state.totalItems());
   const totalPrice = useCartStore((state) => state.totalPrice());
+  const clearCart = useCartStore((state) => state.clearCart);
+  //checkout handler
+  //sends cart items to POST /api/orders, clears cart on success
+  //redirects to /orders page. if user not logged in - redirects to login
+  async function handleCheckout() {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          total: totalPrice,
+        }),
+      });
+      //not logged in - redirect to Auth0 login
+      if (res.status === 401) {
+        router.push("auth/login");
+        return;
+      }
+      if (!res.ok) throw new Error("Failed to create order");
+      //Success - clear cart and navigate to orders page
+      clearCart();
+      toast.success("Order placed successfully!<3");
+      router.push("/orders");
+    } catch (error) {
+      console.error("[CHeckout error]", error);
+      toast.error("Failed to place order. Please try again");
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -40,6 +74,7 @@ export default function CartDrawer() {
         </Button>
       </SheetTrigger>
 
+      {/* ── Drawer content — slides in from the right ── */}
       <SheetContent className="flex flex-col w-full sm:max-w-md border-blue-100">
         {/* Header */}
         <SheetHeader className="border-b border-blue-50 pb-4">
@@ -48,13 +83,16 @@ export default function CartDrawer() {
           </SheetTitle>
         </SheetHeader>
 
+        {/* ── Cart items list — scrollable if many items ── */}
         <div className="flex-1 overflow-y-auto py-2">
           {items.length === 0 ? (
+            // Empty cart state
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
               <ShoppingCart size={40} className="text-blue-200" />
               <p className="text-[14px] text-slate-400">Your cart is empty</p>
             </div>
           ) : (
+            // Render each cart item via CartItem component
             items.map((item) => <CartItem key={item.id} item={item} />)
           )}
         </div>
@@ -68,7 +106,10 @@ export default function CartDrawer() {
               </span>
             </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white">
+            <Button
+              onClick={handleCheckout}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white"
+            >
               Checkout
             </Button>
           </div>

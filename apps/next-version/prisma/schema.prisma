@@ -23,4 +23,37 @@ model Product {
   reviews     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  orderItem   OrderItem[] 
+}
+
+// Order — created when user clicks Checkout in CartDrawer
+model Order {
+  id        String      @id @default(cuid())
+  userId    String      // Auth0 user ID (sub claim)
+  status    OrderStatus @default(PENDING)
+  total     Float
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// Single item inside an order — snapshot of product at time of purchase
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  title     String  // snapshot — in case product is deleted later
+  image     String  // snapshot
+  price     Float   // snapshot — price at time of purchase
+  quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
