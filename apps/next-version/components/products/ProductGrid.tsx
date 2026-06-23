@@ -1,42 +1,61 @@
-//renders a grid of ProductCard components
-//fetches products from /api/products and renders them in a responsive frid
-//thit is a server components - no "use client" needed, fetch runs on the server
-
+// components/products/ProductGrid.tsx
 import ProductCard from "@/components/products/ProductCard";
 import { prisma } from "@/lib/prisma";
-//type
-//matches the Prisma product model
-interface Product {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  price: number;
-  oldPrice: number;
-  discount: number;
-  rating: number;
-  reviews: number;
-}
-//runs on the server - fetches products from our API route
-//cache: "no-store" means always fresh data (no caching)
+import { Category } from "@prisma/client";
+import Link from "next/link";
 
-//component
-export default async function ProductGrid() {
-  //await the products - this runs on the server before the page renders
-  const products: Product[] = await prisma.product.findMany({
+interface ProductGridProps {
+  search?: string;
+  category?: string;
+}
+
+export default async function ProductGrid({
+  search,
+  category,
+}: ProductGridProps) {
+  const products = await prisma.product.findMany({
+    where: {
+      // filter by category if provided
+      ...(category && { category: category as Category }),
+      // filter by search if provided
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: "insensitive" } },
+          { description: { contains: search, mode: "insensitive" } },
+        ],
+      }),
+    },
     orderBy: { createdAt: "desc" },
   });
+
   return (
-    <>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 p-4">
+    <div className="flex flex-col gap-4 p-4">
+      {search && (
+        <p className="text-[14px] text-slate-500">
+          Found{" "}
+          <span className="font-medium text-slate-800">{products.length}</span>
+          results for &quot;{search}&quot;
+        </p>
+      )}
+
+      {products.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
+          <p className="text-[16px] text-slate-400">No products found</p>
+          <Link href="/" className="text-[14px] text-blue-600 hover:underline">
+            Clear filters
+          </Link>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
             product={product}
-            priority={index < 3} // preload first 3 images for LCP performance
+            priority={index < 3}
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }

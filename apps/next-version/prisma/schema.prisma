@@ -9,6 +9,13 @@ datasource db {
   url       = env("DATABASE_URL")
   
 }
+enum Category {
+  ELECTRONICS
+  CLOTHING
+  HOME
+  SPORTS
+  BEAUTY
+}
 
 // Product model — matches the shape of our mock data in ProductGrid.tsx
 model Product {
@@ -21,6 +28,7 @@ model Product {
   discount    Int
   rating      Float
   reviews     Int
+  category    Category    @default(ELECTRONICS)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   orderItem   OrderItem[] 

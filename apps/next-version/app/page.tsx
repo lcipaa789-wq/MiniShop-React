@@ -1,18 +1,22 @@
 import HeroBanner from "@/components/layout/HeroBanner";
+import CategoryFilter from "@/components/products/CategoryFilter";
 import ProductGrid from "@/components/products/ProductGrid";
 
-import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+interface PageProps {
+  searchParams: Promise<{ search?: string; category?: string }>;
+}
 
-export default async function Home() {
-  const products = await prisma.product.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+export default async function Home({ searchParams }: PageProps) {
+  const { search, category } = await searchParams;
+
   return (
     <main>
       <HeroBanner />
-      <ProductGrid />
+      <Suspense fallback={null}>
+        <CategoryFilter />
+      </Suspense>
+      <ProductGrid search={search} category={category} />
     </main>
   );
 }
