@@ -44,10 +44,6 @@ export default function HeroBanner() {
               </Link>
 
               <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
-
-              <span className="absolute bottom-4 left-4 text-white text-[20px] font-semibold">
-                {banner.title}
-              </span>
             </CarouselItem>
           ))}
         </CarouselContent>
