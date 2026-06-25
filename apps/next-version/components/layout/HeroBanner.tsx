@@ -18,7 +18,7 @@ export default function HeroBanner() {
   //delay: 4000 means each slide stays for 4 seconds
   const autoplay = Autoplay({ delay: 4000, stopOnInteraction: true });
   return (
-    <div className="px-6 pt-4">
+    <div className="px-3 pt-3">
       <Carousel
         plugins={[autoplay]}
         onMouseEnter={() => autoplay.stop()}
@@ -29,16 +29,25 @@ export default function HeroBanner() {
         <CarouselContent>
           {banners.map((banner) => (
             <CarouselItem key={banner.id}>
-              <div className="relative block h-48 sm:h-64 w-full overflow-hidden rounded-xl">
+              <Link
+                href={banner.href}
+                className={`relative flex items-center justify-center
+             h-36 sm:h-48 w-full overflow-hidden rounded-xl
+             ${banner.bgColor ?? "bg-blue-50"}`}
+              >
                 <Image
                   src={banner.image}
                   alt={banner.title}
                   className=" object-cover"
                   fill
                 />
-              </div>
+              </Link>
 
               <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+
+              <span className="absolute bottom-4 left-4 text-white text-[20px] font-semibold">
+                {banner.title}
+              </span>
             </CarouselItem>
           ))}
         </CarouselContent>

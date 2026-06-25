@@ -109,7 +109,7 @@ async function main() {
         description:
           "Non-slip 6mm thick yoga mat with carrying strap. Eco-friendly material.",
         image:
-          "https://images.unsplash.com/photo-1601925228088-e3b06d06c1d7?w=400",
+          "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=400",
         price: 44.99,
         oldPrice: 59.99,
         discount: 25,
