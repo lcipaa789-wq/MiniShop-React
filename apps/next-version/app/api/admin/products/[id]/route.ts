@@ -13,7 +13,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   //verify admin role
-  if (!isAdmin()) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   //await params - required in Next.js 15 app Router
@@ -42,13 +42,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   //verify admin role
-  if (!isAdmin()) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const { id } = await params;
 
   //delete OrderItems first - they have foreign key reference to Product
   //if we delete the Product first, the DB throws a foreign key constraint error
-  await prisma.orderItem.deleteMany({ where: { id } });
+
+  await prisma.orderItem.deleteMany({ where: { productId: id } });
+  await prisma.product.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }

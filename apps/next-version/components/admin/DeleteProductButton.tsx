@@ -22,7 +22,7 @@ export default function DeleteProductButton({ id }: DeleteProductButtonProps) {
     setLoading(true);
     // call delete route - it also deletes related OrderItems first
     //to avoid foreign key  constraint errors
-    await fetch(`/api/admin./products/${id}`, { method: "DELETE" });
+    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
 
     //refresh current page data without a full navigation
     //re-runs the server component and show the updated product list

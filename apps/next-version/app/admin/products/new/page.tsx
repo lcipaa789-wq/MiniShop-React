@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ImageUpload from "@/components/admin/ImageUpload";
 //zod schema
 //defines the shape and validation rules for the form
 //zod automatically infers the TYpeScript type form the schema - no duplication
@@ -74,6 +75,8 @@ export default function NewProductPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -131,11 +134,12 @@ export default function NewProductPage() {
 
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-medium text-slate-700">
-            Image URL
+            Product Image
           </label>
-          <Input
-            {...register("image")}
-            placeholder="https://images.unsplash.com/..."
+          {/* ImageUpload calls onChange which updates react-hook-form field value */}
+          <ImageUpload
+            value={watch("image")}
+            onChange={(url) => setValue("image", url)}
           />
           {errors.image && (
             <p className="text-[12px] text-red-500">{errors.image.message}</p>

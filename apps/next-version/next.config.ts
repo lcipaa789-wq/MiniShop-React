@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
 
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "utfs.io", // Uploadthing CDN domain
+      },
     ],
   },
 };

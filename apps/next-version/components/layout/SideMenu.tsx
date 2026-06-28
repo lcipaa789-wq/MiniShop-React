@@ -23,7 +23,6 @@ interface SideMenuProps {
 export default function SideMenu({ user }: SideMenuProps) {
   return (
     <Sheet>
-      {/* Hamburger trigger button — 3 lines icon */}
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -35,12 +34,10 @@ export default function SideMenu({ user }: SideMenuProps) {
         </Button>
       </SheetTrigger>
 
-      {/* Side menu — slides in from the left */}
       <SheetContent
         side="left"
         className="w-[280px] p-0 flex flex-col border-r border-blue-100"
       >
-        {/* ── Menu header — logo + user info ── */}
         <SheetHeader className="bg-[#2563EB] px-5 pt-6 pb-5 text-left">
           <SheetTitle className="text-white text-[20px] font-bold">
             MiniShop
@@ -90,10 +87,8 @@ export default function SideMenu({ user }: SideMenuProps) {
             ))}
           </div>
 
-          {/* Divider */}
           <div className="border-t border-slate-100 my-4" />
 
-          {/* Auth button at bottom */}
           {user ? (
             <a
               href="/auth/logout"
@@ -113,7 +108,6 @@ export default function SideMenu({ user }: SideMenuProps) {
           )}
         </nav>
 
-        {/* ── Menu footer ── */}
         <div className="px-5 py-4 border-t border-slate-100">
           <p className="text-[11px] text-slate-400">
             © 2026 MiniShop. All rights reserved.

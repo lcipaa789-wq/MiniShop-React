@@ -26,29 +26,14 @@ export default function CartDrawer() {
   //sends cart items to POST /api/orders, clears cart on success
   //redirects to /orders page. if user not logged in - redirects to login
   async function handleCheckout() {
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items,
-          total: totalPrice,
-        }),
-      });
-      //not logged in - redirect to Auth0 login
-      if (res.status === 401) {
-        router.push("auth/login");
-        return;
-      }
-      if (!res.ok) throw new Error("Failed to create order");
-      //Success - clear cart and navigate to orders page
-      clearCart();
-      toast.success("Order placed successfully!<3");
-      router.push("/orders");
-    } catch (error) {
-      console.error("[CHeckout error]", error);
-      toast.error("Failed to place order. Please try again");
+    // check if logged in — redirect to login if not
+    const res = await fetch("/api/orders", { method: "GET" });
+    if (res.status === 401) {
+      router.push("/auth/login");
+      return;
     }
+    // navigate to checkout page — Stripe form is there
+    router.push("/checkout");
   }
 
   return (
