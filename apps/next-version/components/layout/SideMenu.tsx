@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { LogIn, LogOut, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 //types
 interface SideMenuProps {
   user?: {
@@ -21,8 +22,10 @@ interface SideMenuProps {
   } | null;
 }
 export default function SideMenu({ user }: SideMenuProps) {
+  //controls whether the Sheet is open
+  const [open, setOpen] = useState(false);
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
@@ -75,6 +78,7 @@ export default function SideMenu({ user }: SideMenuProps) {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={() => setOpen(false)}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg
                            text-slate-700 hover:bg-blue-50 hover:text-blue-600
                            transition-colors text-[14px] font-medium"
@@ -92,6 +96,7 @@ export default function SideMenu({ user }: SideMenuProps) {
           {user ? (
             <a
               href="/auth/logout"
+              onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
             >
               <LogOut size={18} />
@@ -100,6 +105,7 @@ export default function SideMenu({ user }: SideMenuProps) {
           ) : (
             <a
               href="/auth/login"
+              onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
             >
               <LogIn size={18} />

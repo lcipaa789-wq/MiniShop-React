@@ -7,6 +7,27 @@ import { isAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { Category } from "@prisma/client";
 
+//GET
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  //verify admin role - only admins can fetch product details via this router
+  if (!(await isAdmin())) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  const { id } = await params;
+  //fetch the product by its unique ID
+  const product = await prisma.product.findUnique({
+    where: { id },
+  });
+  //return 404 if product doesnt exist - prevents confusing errors in the edit form
+  if (!product) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
+  return NextResponse.json(product);
+}
+
 //PATCH - update existing product
 export async function PATCH(
   request: Request,

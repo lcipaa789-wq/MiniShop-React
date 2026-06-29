@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { useCartStore } from "@/hooks/useCartSore";
 import CartItem from "@/components/cart/CartItem";
+import { useState } from "react";
 
 export default function CartDrawer() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function CartDrawer() {
   const totalItems = useCartStore((state) => state.totalItems());
   const totalPrice = useCartStore((state) => state.totalPrice());
   const clearCart = useCartStore((state) => state.clearCart);
+  const [open, setOpen] = useState(false);
   //checkout handler
   //sends cart items to POST /api/orders, clears cart on success
   //redirects to /orders page. if user not logged in - redirects to login
@@ -29,15 +31,18 @@ export default function CartDrawer() {
     // check if logged in — redirect to login if not
     const res = await fetch("/api/orders", { method: "GET" });
     if (res.status === 401) {
+      setOpen(false);
       router.push("/auth/login");
       return;
     }
+    setOpen(false);
     // navigate to checkout page — Stripe form is there
+
     router.push("/checkout");
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
